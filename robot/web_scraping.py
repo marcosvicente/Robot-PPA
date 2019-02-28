@@ -17,13 +17,14 @@ class WebScraping:
         url = self.set_url()
         self.soup = BeautifulSoup(url, 'html.parser')
 
-    def get_name_of_courses(self):
+    def get_url_of_courses(self):
         """docstring for get_name_of_courses"""
         self.get_html_of_site()
-        print(self.soup.find_all('h2'))
+        return self.soup.find_all('a', text="Cursos")
 
     def web_scraping(self):
-        self.get_name_of_courses()
+        self.get_url_of_courses()
+        print(self.get_url_of_courses())
 
 w = WebScraping()
 w.web_scraping()
