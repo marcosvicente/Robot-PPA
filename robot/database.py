@@ -33,18 +33,36 @@ class Database:
         try:
             self.connector()
             self.cursor.execute("CREATE DATABASE robot_ifsp")
-            print("Create Table: robot_ifsp")
+            print("Create Database: robot_ifsp")
 
         except MySQLdb.Error as e:
             print("Error %d: %s").format(e.args[0],e.args[1])
 
 
+    def create_table_courses(self):
+        table = """
+            CREATE TABLE courses (
+                id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+                name VARCHAR(255),
+                url VARCHAR(255)
+            );
+            """
+        self.cursor.execute(table)
+        print("CREATE TABLE courses")
 
-    def main(self):
+
+    def create_table(self):
+        self.connector()
+        self.cursor.execute("USE robot_ifsp")
+        self.create_table_courses()
+
+
+    def run(self):
         self.drop_database()
         self.create_database()
+        self.create_table()
         self.db.close()
 
 
 d = Database()
-d.main()
+d.run()
