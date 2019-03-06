@@ -1,67 +1,72 @@
 #!/usr/bin/env python3
 
-import MySQLdb
-import sys
+# import MySQLdb
+import mysql.connector
+from mysql.connector import Error
+
+
+"""Connector mysql"""
+db = mysql.connector.connect(
+    host="localhost",
+    user="root",
+    password="123"
+)
+db = db
+cursor = db.cursor()
 
 
 class Database:
     def __init__(self):
-        self.db = None
-        self.cursor = None
-
-    def connector(self):
-        """Connector mysql"""
-        try:
-            db = MySQLdb.connect(
-                host="localhost",
-                user="root",
-                password="123"
-            )
-            self.db = db
-            self.cursor = db.cursor()
-
-        except MySQLdb.Error as e:
-            print("Error %d: %s").format(e.args[0],e.args[1])
+        self.db = db 
+        self.cursor = cursor
+        print(db.is_connected())
 
 
     def drop_database(self):
-        self.connector()
-        self.cursor.execute("DROP DATABASE IF EXISTS robot_ifsp")
+        cursor.execute("DROP DATABASE IF EXISTS robot_ifsp")
+        print("Drop database: robot_ifsp")
 
 
     def create_database(self):
-        try:
-            self.connector()
-            self.cursor.execute("CREATE DATABASE robot_ifsp")
-            print("Create Database: robot_ifsp")
+        cursor.execute("CREATE DATABASE robot_ifsp")
+        print("Create Database: robot_ifsp")
 
-        except MySQLdb.Error as e:
-            print("Error %d: %s").format(e.args[0],e.args[1])
+
+    def create_table(self):
+        self.create_table_courses()
 
 
     def create_table_courses(self):
         table = """
-            CREATE TABLE courses (
+            CREATE TABLE robot_ifsp.courses (
                 id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
                 name VARCHAR(255),
                 url VARCHAR(255)
             );
             """
-        self.cursor.execute(table)
-        print("CREATE TABLE courses")
+        cursor.execute(table)
+        cursor.execute("Use robot_ifsp")
+        print("Create Table courses")
 
 
-    def create_table(self):
-        self.connector()
-        self.cursor.execute("USE robot_ifsp")
-        self.create_table_courses()
+    def insert_table_courses(self, name, url):
+        insert = """
+                INSERT INTO robot_ifsp.courses (name, url) VALUES(
+                    '{0}',
+                    '{1}'
+                );
+        """.format(name, url)
+
+        print(db.is_connected())
+        cursor.execute(insert)
+        db.commit()
+        print(insert)
 
 
     def run(self):
         self.drop_database()
         self.create_database()
         self.create_table()
-        self.db.close()
 
 
 d = Database()
