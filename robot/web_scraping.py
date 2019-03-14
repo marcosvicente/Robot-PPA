@@ -52,15 +52,65 @@ class WebScraping:
                     self.url_courses.append(a)
 
 
+    def get_url_each_courses(self):
+      pass 
+
+    def get_about_to_courses(self, courses):
+        url = "{0}{1}/sobre-o-curso".format(self.url_base, courses.get("href"))
+        soup_about_courses = BeautifulSoup(urllib.request.urlopen(url),
+                                          'html.parser')
+
+        print(url)
+        for p in soup_about_courses.find_all("div", class_="internas"):
+            for text in p.find_all("p"):
+                return text.get_text()
+                break
+        
+
+    # def get_all_pdf_ppa(self, courses):
+    #     url = "{0}{1}".format(self.url_base, courses.get("href"))
+    #     url_each_courses = urllib.request.urlopen(url)
+    #     soup_each_courses = BeautifulSoup(url_each_courses,
+    #                                       'html.parser',
+    #                                       from_encoding="iso-8859-1")
+    #     link_pdf = soup_each_courses.find(
+    #                         "img",
+    #                         alt="Projeto Pedagógico do Curso (PPC)"
+    #                     )
+    #
+    #     # file_zip = self.get_files_drive_ifsp(link_pdf.get("href"))
+    #     # print(file_zip)
+    #     # self.download_pdf(file_zip)
+    #     print(url)
+    #
+    # def get_files_drive_ifsp(self, drive_url):
+    #     url = urllib.request.urlopen(drive_url)
+    #     soup_drive = BeautifulSoup(url, 'html.parser')
+    #     soup_drive.find('a',  class_="button").get("href")
+    #
+    #
+    # def download_pdf(self, url):
+    #     a = urllib.request.urlopen(url)
+    #     print(a)
+    #     # with open(a) as f:
+    #     #     f.write(request.content)
+
+
     def web_scraping(self):
         self.get_tag_name_of_page_courses()
         for courses in self.url_courses:
+            print(
+                self.get_about_to_courses(courses)
+            )
             Database.insert_table_courses(
                 self,
                 courses.get_text(),
-                courses.get("href")
+                courses.get("href"),
+                self.get_about_to_courses(courses)
             )
 
+            # self.get_all_pdf_ppa(courses)
+            self.get_about_to_courses(courses)
 
 w = WebScraping()
 w.web_scraping()

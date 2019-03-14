@@ -41,7 +41,8 @@ class Database:
             CREATE TABLE robot_ifsp.courses (
                 id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
                 name VARCHAR(255),
-                url VARCHAR(255)
+                url VARCHAR(255),
+                introdution TEXT 
             );
             """
         cursor.execute(table)
@@ -49,15 +50,16 @@ class Database:
         print("Create Table courses")
 
 
-    def insert_table_courses(self, name, url):
+    
+    def insert_table_courses(self, name, url, introdution):
         insert = """
-                INSERT INTO robot_ifsp.courses (name, url) VALUES(
+                INSERT INTO robot_ifsp.courses (name, url, introdution) VALUES(
                     '{0}',
-                    '{1}'
+                    '{1}',
+                    '{2}'
                 );
-        """.format(name, url)
+        """.format(name, url, introdution)
 
-        print(db.is_connected())
         cursor.execute(insert)
         db.commit()
         print(insert)
